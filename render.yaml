@@ -1,0 +1,55 @@
+services:
+  # Main API Service
+  - type: web
+    name: pulsepress-api
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: pulsepress-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+    healthCheckPath: /health
+
+  # Background Worker Service
+  - type: worker
+    name: pulsepress-worker
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node dist/jobs/workers.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: pulsepress-redis
+          property: connectionString
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+
+# Redis Instance
+databases:
+  - name: pulsepress-redis
+    plan: free
+    region: oregon
