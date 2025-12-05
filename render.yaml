@@ -16,7 +16,6 @@ services:
         sync: false
       - key: REDIS_URL
         value: redis://red-d4pbjqur433s73ejpkc0:6379
-        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -40,6 +39,5 @@ services:
         sync: false
       - key: REDIS_URL
         value: redis://red-d4pbjqur433s73ejpkc0:6379
-        sync: false
       - key: HUGGINGFACE_API_KEY
         sync: false
