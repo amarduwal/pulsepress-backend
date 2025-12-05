@@ -49,7 +49,7 @@ services:
         sync: false
 
 # Redis Instance
-databases:
+redis:
   - name: pulsepress-redis
     plan: free
     region: oregon
