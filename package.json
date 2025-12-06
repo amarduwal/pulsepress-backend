@@ -7,7 +7,7 @@
     "dev": "tsx watch --inspect src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "start:worker": "node dist/jobs/start-workers.js",
+    "start:worker": "node dist/jobs/workers.js",
     "migrate": "node -r tsx/cjs src/db/migrate.ts",
     "migrate:rollback": "tsx src/db/migrate.ts rollback",
     "migrate:reset": "tsx src/db/migrate.ts reset",
