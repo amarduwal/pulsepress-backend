@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express"
 import { logger } from "../lib/logger"
 import { serverErrorResponse } from "../lib/response"
 
-export function errorHandler(error: Error, req: Request, res: Response, next: NextFunction): void {
+export function errorHandler(error: Error, req: Request, res: Response, _next: NextFunction): void {
   logger.error(
     {
       error: {
@@ -21,7 +21,7 @@ export function errorHandler(error: Error, req: Request, res: Response, next: Ne
   serverErrorResponse(res)
 }
 
-export function notFoundHandler(req: Request, res: Response, next: NextFunction): void {
+export function notFoundHandler(req: Request, res: Response, _next: NextFunction): void {
   res.status(404).json({
     ok: false,
     error: {

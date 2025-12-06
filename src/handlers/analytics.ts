@@ -5,7 +5,7 @@ import { successResponse, errorResponse } from "../lib/response"
 import { logger } from "../lib/logger"
 import { cacheGet, cacheSet } from "../lib/redis"
 
-export async function getOverview(req: AuthRequest, res: Response): Promise<void> {
+export async function getOverview(_req: AuthRequest, res: Response): Promise<void> {
   try {
     const cacheKey = "analytics:overview"
 
@@ -18,7 +18,7 @@ export async function getOverview(req: AuthRequest, res: Response): Promise<void
 
     // Get total articles
     const articlesResult = await query(`
-      SELECT 
+      SELECT
         COUNT(*) as total,
         COUNT(*) FILTER (WHERE status = 'published') as published,
         COUNT(*) FILTER (WHERE status = 'draft') as draft,
@@ -28,7 +28,7 @@ export async function getOverview(req: AuthRequest, res: Response): Promise<void
 
     // Get total users
     const usersResult = await query(`
-      SELECT 
+      SELECT
         COUNT(*) as total,
         COUNT(*) FILTER (WHERE role = 'admin') as admins,
         COUNT(*) FILTER (WHERE role = 'moderator') as moderators,
@@ -39,7 +39,7 @@ export async function getOverview(req: AuthRequest, res: Response): Promise<void
 
     // Get total comments
     const commentsResult = await query(`
-      SELECT 
+      SELECT
         COUNT(*) as total,
         COUNT(*) FILTER (WHERE is_approved = true) as approved,
         COUNT(*) FILTER (WHERE is_approved = false) as pending,
@@ -110,7 +110,7 @@ export async function getTopArticles(req: AuthRequest, res: Response): Promise<v
     const orderBy = metric === "shares" ? "shares_count" : metric === "comments" ? "comments_count" : "views_count"
 
     const result = await query(
-      `SELECT 
+      `SELECT
         id, title, slug, views_count, shares_count, comments_count,
         published_at, c.name as category_name
        FROM articles a
@@ -144,7 +144,7 @@ export async function getTrafficStats(req: AuthRequest, res: Response): Promise<
 
     // Get daily views
     const viewsResult = await query(
-      `SELECT 
+      `SELECT
         DATE(viewed_at) as date,
         COUNT(*) as views
        FROM article_views
@@ -155,7 +155,7 @@ export async function getTrafficStats(req: AuthRequest, res: Response): Promise<
 
     // Get views by category
     const categoryResult = await query(
-      `SELECT 
+      `SELECT
         c.name as category,
         SUM(a.views_count) as views
        FROM articles a
@@ -190,7 +190,7 @@ export async function getUserStats(req: AuthRequest, res: Response): Promise<voi
 
     // Get new users over time
     const newUsersResult = await query(
-      `SELECT 
+      `SELECT
         DATE(created_at) as date,
         COUNT(*) as users
        FROM users
@@ -243,7 +243,7 @@ export async function getContentStats(req: AuthRequest, res: Response): Promise<
 
     // Get articles published over time
     const articlesResult = await query(
-      `SELECT 
+      `SELECT
         DATE(published_at) as date,
         COUNT(*) as articles
        FROM articles
@@ -255,7 +255,7 @@ export async function getContentStats(req: AuthRequest, res: Response): Promise<
 
     // Get articles by category
     const categoryResult = await query(
-      `SELECT 
+      `SELECT
         c.name as category,
         COUNT(a.id) as count
        FROM articles a
@@ -268,7 +268,7 @@ export async function getContentStats(req: AuthRequest, res: Response): Promise<
 
     // Get articles by source
     const sourceResult = await query(
-      `SELECT 
+      `SELECT
         source_name,
         COUNT(*) as count
        FROM articles

@@ -101,7 +101,7 @@ export async function ensureHighQualityFeaturedImage(
     const alternatives = await findBetterImageAlternatives(
       imageUrl,
       articleUrl,
-      articleTitle,
+      // articleTitle,
       articleContent
     )
 
@@ -337,6 +337,7 @@ async function extractOgImageFromUrl(url: string): Promise<string | null> {
       } catch (e) {
         // Continue
       }
+      return true
     })
 
     if (jsonLdImage) {
@@ -361,7 +362,7 @@ async function extractOgImageFromUrl(url: string): Promise<string | null> {
 /**
  * Build optimized search query for finding relevant images
  */
-function buildImageSearchQuery(title: string, content: string): string {
+function buildImageSearchQuery(title: string, _content: string): string {
   // Clean title
   const cleanTitle = title
     .replace(/^(breaking|update|exclusive|just in):/i, '')
@@ -369,8 +370,8 @@ function buildImageSearchQuery(title: string, content: string): string {
     .trim()
 
   // Extract key entities from content (simple approach)
-  const sentences = content.substring(0, 500).match(/[^.!?]+[.!?]/g) || [content.substring(0, 200)]
-  const firstSentence = sentences[0].trim()
+  // const sentences = content.substring(0, 500).match(/[^.!?]+[.!?]/g) || [content.substring(0, 200)]
+  // const firstSentence = sentences[0].trim()
 
   // Combine for search - prioritize title
   const query = `${cleanTitle} news image`.substring(0, 100)
@@ -615,59 +616,59 @@ async function isNewsWebsite(url: string): Promise<boolean> {
 /**
  * Get stock/placeholder image as last resort fallback
  */
-async function getStockImageFallback(
-  articleTitle: string,
-  articleContent: string
-): Promise<string | null> {
-  logger.warn("Stock image fallback is disabled - Unsplash source URLs are redirects")
-  logger.info("Consider using Pexels API or Pixabay API for stock images")
-  return null
-}
+// async function getStockImageFallback(
+//   articleTitle: string,
+//   articleContent: string
+// ): Promise<string | null> {
+//   logger.warn("Stock image fallback is disabled - Unsplash source URLs are redirects")
+//   logger.info("Consider using Pexels API or Pixabay API for stock images")
+//   return null
+// }
 
 /**
  * Detect article category for stock image selection
  */
-function detectArticleCategory(title: string, content: string): string {
-  const text = `${title} ${content.substring(0, 500)}`.toLowerCase()
+// function detectArticleCategory(title: string, content: string): string {
+//   const text = `${title} ${content.substring(0, 500)}`.toLowerCase()
 
-  const categories = {
-    technology: ['tech', 'software', 'ai', 'computer', 'digital', 'internet', 'startup', 'app'],
-    business: ['business', 'economy', 'market', 'financial', 'stock', 'company', 'trade'],
-    sports: ['sport', 'football', 'basketball', 'soccer', 'game', 'player', 'match', 'athlete'],
-    health: ['health', 'medical', 'doctor', 'hospital', 'disease', 'treatment', 'medicine'],
-    science: ['science', 'research', 'study', 'discovery', 'space', 'scientist', 'experiment'],
-    entertainment: ['movie', 'music', 'film', 'celebrity', 'actor', 'show', 'concert', 'tv'],
-    politics: ['political', 'election', 'government', 'president', 'minister', 'parliament'],
-    world: ['world', 'international', 'global', 'country', 'nation', 'foreign']
-  }
+//   const categories = {
+//     technology: ['tech', 'software', 'ai', 'computer', 'digital', 'internet', 'startup', 'app'],
+//     business: ['business', 'economy', 'market', 'financial', 'stock', 'company', 'trade'],
+//     sports: ['sport', 'football', 'basketball', 'soccer', 'game', 'player', 'match', 'athlete'],
+//     health: ['health', 'medical', 'doctor', 'hospital', 'disease', 'treatment', 'medicine'],
+//     science: ['science', 'research', 'study', 'discovery', 'space', 'scientist', 'experiment'],
+//     entertainment: ['movie', 'music', 'film', 'celebrity', 'actor', 'show', 'concert', 'tv'],
+//     politics: ['political', 'election', 'government', 'president', 'minister', 'parliament'],
+//     world: ['world', 'international', 'global', 'country', 'nation', 'foreign']
+//   }
 
-  for (const [category, keywords] of Object.entries(categories)) {
-    if (keywords.some(kw => text.includes(kw))) {
-      return category
-    }
-  }
+//   for (const [category, keywords] of Object.entries(categories)) {
+//     if (keywords.some(kw => text.includes(kw))) {
+//       return category
+//     }
+//   }
 
-  return 'news' // default
-}
+//   return 'news' // default
+// }
 
 /**
  * Get keywords for stock image search
  */
-function getCategoryKeywords(category: string): string {
-  const keywordMap: Record<string, string> = {
-    technology: 'technology,computer,digital',
-    business: 'business,finance,office',
-    sports: 'sports,athlete,game',
-    health: 'health,medical,wellness',
-    science: 'science,research,laboratory',
-    entertainment: 'entertainment,music,concert',
-    politics: 'politics,government,capitol',
-    world: 'world,globe,international',
-    news: 'news,newspaper,media'
-  }
+// function getCategoryKeywords(category: string): string {
+//   const keywordMap: Record<string, string> = {
+//     technology: 'technology,computer,digital',
+//     business: 'business,finance,office',
+//     sports: 'sports,athlete,game',
+//     health: 'health,medical,wellness',
+//     science: 'science,research,laboratory',
+//     entertainment: 'entertainment,music,concert',
+//     politics: 'politics,government,capitol',
+//     world: 'world,globe,international',
+//     news: 'news,newspaper,media'
+//   }
 
-  return keywordMap[category] || 'news,media'
-}
+//   return keywordMap[category] || 'news,media'
+// }
 
 // ============================================
 // EXISTING FUNCTIONS (PRESERVED)
@@ -709,7 +710,7 @@ async function analyzeImageQuality(imageUrl: string): Promise<{
     // Check URL for quality indicators
     const urlLower = imageUrl.toLowerCase()
     const hasLowQualityKeyword = QUALITY_THRESHOLDS.LOW_QUALITY_KEYWORDS.some(kw => urlLower.includes(kw))
-    const hasHighQualityKeyword = QUALITY_THRESHOLDS.HIGH_QUALITY_KEYWORDS.some(kw => urlLower.includes(kw))
+    // const hasHighQualityKeyword = QUALITY_THRESHOLDS.HIGH_QUALITY_KEYWORDS.some(kw => urlLower.includes(kw))
 
     // High quality criteria
     if (
@@ -798,7 +799,7 @@ function guessQualityFromUrl(imageUrl: string): {
 async function findBetterImageAlternatives(
   currentImageUrl: string,
   articleUrl: string,
-  articleTitle: string,
+  // articleTitle: string,
   articleContent: string
 ): Promise<string[]> {
   const alternatives: string[] = []
@@ -930,7 +931,7 @@ async function scrapeArticleForBestImages(
     const candidates: Array<{ url: string; priority: number }> = []
 
     // Priority 0: JSON-LD (ADD THIS SECTION)
-    $('script[type="application/ld+json"]').each((i, elem) => {
+    $('script[type="application/ld+json"]').each((_i, elem) => {
       try {
         const jsonLd = $(elem).html()
         if (jsonLd) {
@@ -1029,7 +1030,7 @@ function extractHighQualityImagesFromContent(
     const $ = cheerio.load(contentHtml)
     const images: Array<{ url: string; score: number }> = []
 
-    $('img').each((i, elem) => {
+    $('img').each((_i, elem) => {
       const src = $(elem).attr('src') || $(elem).attr('data-src')
       if (!src || isSameImage(src, excludeUrl) || isExcludedImage(src)) return
 

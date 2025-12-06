@@ -23,7 +23,7 @@ export interface ParsedArticle {
   categories?: string[]
   enclosure?: {
     url: string
-    type: string
+    type?: string
   }
   mediaContent?: any
   mediaThumbnail?: any
@@ -50,7 +50,7 @@ export async function parseRSSFeed(url: string): Promise<ParsedArticle[]> {
         content: fullContent,
         contentSnippet: item.contentSnippet || "",
         pubDate: item.pubDate || item.isoDate,
-        author: item.creator || item.author,
+        author: item.creator,
         categories: item.categories || [],
         enclosure: item.enclosure,
         mediaContent: item.mediaContent,

@@ -36,7 +36,6 @@ export function extractEntities(text: string): Record<string, string[]> {
       people: doc.people().out("array") as string[],
       places: doc.places().out("array") as string[],
       organizations: doc.organizations().out("array") as string[],
-      dates: doc.dates().out("array") as string[],
     }
 
     // Deduplicate and limit
@@ -53,6 +52,6 @@ export function extractEntities(text: string): Record<string, string[]> {
 
 export function calculateReadingTime(text: string): number {
   const wordsPerMinute = 200
-  const words = tokenizer.tokenize(text).length
+  const words = (tokenizer.tokenize(text) || []).length
   return Math.ceil(words / wordsPerMinute)
 }

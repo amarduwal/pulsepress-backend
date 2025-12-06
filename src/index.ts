@@ -53,7 +53,7 @@ app.use(pinoHttp({ logger }))
 app.use(generalLimiter)
 
 // Health check
-app.get("/health", (req, res) => {
+app.get("/health", (_req, res) => {
   res.json({ ok: true, status: "healthy", timestamp: new Date().toISOString() })
 })
 

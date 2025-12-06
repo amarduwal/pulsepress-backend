@@ -6,7 +6,7 @@ import { redis } from "../lib/redis"
 const router = express.Router()
 
 // Queue statistics dashboard
-router.get("/dashboard", async (req, res) => {
+router.get("/dashboard", async (_req, res) => {
   try {
     const [fetchCounts, processCounts, publishCounts] = await Promise.all([
       fetchQueue.getJobCounts(),
@@ -93,10 +93,11 @@ router.get("/failed/:queue", async (req, res) => {
         targetQueue = publishQueue
         break
       default:
-        return res.status(400).json({ error: "Invalid queue name" })
+        res.status(400).json({ error: "Invalid queue name" })
+        return
     }
 
-    const failed = await targetQueue.getFailed()
+    const failed = await targetQueue!.getFailed()
 
     const failedDetails = await Promise.all(
       failed.slice(0, 20).map(async (job) => ({
@@ -145,10 +146,10 @@ router.post("/retry/:queue/:jobId", async (req, res) => {
     await job.retry()
     logger.info({ queue, jobId }, "Job retried")
 
-    res.json({ success: true, message: "Job retried", jobId })
+    return res.json({ success: true, message: "Job retried", jobId })
   } catch (error: any) {
     logger.error({ error }, "Failed to retry job")
-    res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message })
   }
 })
 
@@ -177,10 +178,10 @@ router.post("/clean/:queue", async (req, res) => {
     const cleaned = await targetQueue.clean(grace, 100, status)
     logger.info({ queue, status, count: cleaned.length }, "Cleaned jobs")
 
-    res.json({ success: true, cleaned: cleaned.length })
+    return res.json({ success: true, cleaned: cleaned.length })
   } catch (error: any) {
     logger.error({ error }, "Failed to clean jobs")
-    res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message })
   }
 })
 
@@ -201,13 +202,15 @@ router.get("/job/:queue/:jobId", async (req, res) => {
         targetQueue = publishQueue
         break
       default:
-        return res.status(400).json({ error: "Invalid queue name" })
+        res.status(400).json({ error: "Invalid queue name" })
+        return
     }
 
     const job = await targetQueue.getJob(jobId)
 
     if (!job) {
-      return res.status(404).json({ error: "Job not found" })
+      res.status(404).json({ error: "Job not found" })
+      return
     }
 
     const state = await job.getState()
@@ -233,7 +236,7 @@ router.get("/job/:queue/:jobId", async (req, res) => {
 })
 
 // Check Redis connection
-router.get("/redis-status", async (req, res) => {
+router.get("/redis-status", async (_req, res) => {
   try {
     const pong = await redis.ping()
     const info = await redis.info()
@@ -248,7 +251,7 @@ router.get("/redis-status", async (req, res) => {
 })
 
 // Get all Redis keys (for debugging)
-router.get("/redis-keys", async (req, res) => {
+router.get("/redis-keys", async (_req, res) => {
   try {
     const keys = await redis.keys("bull:*")
     const grouped: Record<string, number> = {}
@@ -286,7 +289,8 @@ router.post("/pause/:queue", async (req, res) => {
         targetQueue = publishQueue
         break
       default:
-        return res.status(400).json({ error: "Invalid queue name" })
+        res.status(400).json({ error: "Invalid queue name" })
+        return
     }
 
     await targetQueue.pause()
@@ -315,7 +319,8 @@ router.post("/resume/:queue", async (req, res) => {
         targetQueue = publishQueue
         break
       default:
-        return res.status(400).json({ error: "Invalid queue name" })
+        res.status(400).json({ error: "Invalid queue name" })
+        return
     }
 
     await targetQueue.resume()

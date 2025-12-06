@@ -1,4 +1,4 @@
-import { Pool, type QueryResult } from "pg"
+import { Pool, type QueryResult, type QueryResultRow } from "pg"
 import { config } from "../config"
 import { logger } from "../lib/logger"
 
@@ -13,7 +13,7 @@ pool.on("error", (err) => {
   process.exit(-1)
 })
 
-export async function query<T = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+export async function query<T extends QueryResultRow = QueryResultRow>(text: string, params?: any[]): Promise<QueryResult<T>> {
   const start = Date.now()
   try {
     const result = await pool.query<T>(text, params)

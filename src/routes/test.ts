@@ -1,5 +1,5 @@
 import express from "express"
-import { addFetchJob, addProcessJob, addPublishJob } from "../jobs/queues"
+import { addFetchJob, addProcessJob } from "../jobs/queues"
 import { logger } from "../lib/logger"
 import { query } from "../db/client"
 
@@ -19,7 +19,7 @@ router.post("/fetch/:sourceId", async (req, res) => {
 })
 
 // Trigger fetch for all active sources
-router.post("/fetch-all", async (req, res) => {
+router.post("/fetch-all", async (_req, res) => {
   try {
     const result = await query("SELECT id FROM news_sources WHERE is_active = true")
 
@@ -40,7 +40,7 @@ router.post("/fetch-all", async (req, res) => {
 })
 
 // Manually add a test article to process
-router.post("/process-test", async (req, res) => {
+router.post("/process-test", async (_req, res) => {
   try {
     const testArticle = {
       sourceId: "test-source",
@@ -63,7 +63,7 @@ router.post("/process-test", async (req, res) => {
 })
 
 // Get queue stats
-router.get("/queue-stats", async (req, res) => {
+router.get("/queue-stats", async (_req, res) => {
   try {
     const { fetchQueue, processQueue, publishQueue } = await import("../jobs/queues")
 
@@ -85,7 +85,7 @@ router.get("/queue-stats", async (req, res) => {
 })
 
 // Clear all jobs and start fresh
-router.post("/clear-all-jobs", async (req, res) => {
+router.post("/clear-all-jobs", async (_req, res) => {
   try {
     const { fetchQueue, processQueue, publishQueue } = await import("../jobs/queues")
 

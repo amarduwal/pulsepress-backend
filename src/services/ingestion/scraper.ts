@@ -139,7 +139,7 @@ export function extractImageUrl(html: string, baseUrl: string): string | null {
     // Priority 5: Find largest image in article content
     const articleImages: Array<{ url: string; size: number }> = []
 
-    $("article img, .article img, #article img, .content img, .entry-content img, .post-content img, main img").each((i, elem) => {
+    $("article img, .article img, #article img, .content img, .entry-content img, .post-content img, main img").each((_i, elem) => {
       const src = $(elem).attr("src") || $(elem).attr("data-src") || $(elem).attr("data-lazy-src")
       const width = parseInt($(elem).attr("width") || "0")
       const height = parseInt($(elem).attr("height") || "0")
@@ -176,7 +176,7 @@ export function extractImageUrl(html: string, baseUrl: string): string | null {
     // Priority 6: Any img in document (last resort)
     const anyImages: Array<{ url: string; size: number }> = []
 
-    $("img").each((i, elem) => {
+    $("img").each((_i, elem) => {
       const src = $(elem).attr("src") || $(elem).attr("data-src")
       const width = parseInt($(elem).attr("width") || "0")
       const height = parseInt($(elem).attr("height") || "0")

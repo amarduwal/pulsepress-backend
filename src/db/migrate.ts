@@ -28,9 +28,9 @@ async function getExecutedMigrations(): Promise<string[]> {
   return result.rows.map((row) => row.name)
 }
 
-async function markMigrationAsExecuted(name: string) {
-  await pool.query("INSERT INTO migrations (name) VALUES ($1)", [name])
-}
+// async function markMigrationAsExecuted(name: string) {
+//   await pool.query("INSERT INTO migrations (name) VALUES ($1)", [name])
+// }
 
 async function removeMigrationRecord(name: string) {
   await pool.query("DELETE FROM migrations WHERE name = $1", [name])
@@ -238,24 +238,24 @@ async function status() {
   logger.info(`\nTotal: ${allMigrations.length} | Executed: ${executedMigrations.length} | Pending: ${allMigrations.length - executedMigrations.length}`)
 }
 
-async function markAsExecuted(migrationName: string) {
-  await ensureMigrationsTable()
+// async function markAsExecuted(migrationName: string) {
+//   await ensureMigrationsTable()
 
-  const executedMigrations = await getExecutedMigrations()
+//   const executedMigrations = await getExecutedMigrations()
 
-  if (executedMigrations.includes(migrationName)) {
-    logger.warn(`Migration '${migrationName}' is already marked as executed`)
-    return
-  }
+//   if (executedMigrations.includes(migrationName)) {
+//     logger.warn(`Migration '${migrationName}' is already marked as executed`)
+//     return
+//   }
 
-  try {
-    await markMigrationAsExecuted(migrationName)
-    logger.info(`✓ Marked '${migrationName}' as executed`)
-  } catch (error) {
-    logger.error({ error }, `Failed to mark migration as executed`)
-    throw error
-  }
-}
+//   try {
+//     await markMigrationAsExecuted(migrationName)
+//     logger.info(`✓ Marked '${migrationName}' as executed`)
+//   } catch (error) {
+//     logger.error({ error }, `Failed to mark migration as executed`)
+//     throw error
+//   }
+// }
 
 async function fresh() {
   logger.info("Performing fresh migration (drop all tables and re-migrate)...")

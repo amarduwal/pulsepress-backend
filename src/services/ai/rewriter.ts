@@ -1,10 +1,10 @@
-import axios from "axios"
+// import axios from "axios"
 import * as cheerio from "cheerio"
-import { config } from "../../config"
+// import { config } from "../../config"
 import { logger } from "../../lib/logger"
 import { researchNewsOnline } from "./web-researcher"
 
-const HF_API_URL = config.ai.huggingfaceApiUrl
+// const HF_API_URL = config.ai.huggingfaceApiUrl
 
 /**
  * Rewrite article with comprehensive research from the internet
@@ -333,7 +333,7 @@ function extractImagesFromHTML(
     // Normalize featured image URL for comparison
     const normalizedFeaturedUrl = featuredImageUrl ? normalizeImageUrl(featuredImageUrl) : null
 
-    $('img').each((i, elem) => {
+    $('img').each((_i, elem) => {
       const $img = $(elem)
       const src = $img.attr('src') || $img.attr('data-src') || $img.attr('data-lazy-src')
       const alt = $img.attr('alt') || ''
@@ -415,88 +415,88 @@ function normalizeImageUrl(url: string): string {
  * Format rewritten text as a professional news article with HTML, proper spacing, and images
  * Images are different from featured image
  */
-function formatAsNewsArticleWithImages(
-  text: string,
-  title: string,
-  images: Array<{ url: string; alt: string; caption?: string }>
-): string {
-  // Split into meaningful paragraphs
-  const paragraphs = text
-    .split(/\n\n+/)
-    .map(p => p.trim())
-    .filter(p => p.length > 50)
+// function formatAsNewsArticleWithImages(
+//   text: string,
+//   title: string,
+//   images: Array<{ url: string; alt: string; caption?: string }>
+// ): string {
+//   // Split into meaningful paragraphs
+//   const paragraphs = text
+//     .split(/\n\n+/)
+//     .map(p => p.trim())
+//     .filter(p => p.length > 50)
 
-  if (paragraphs.length === 0) {
-    return createDescriptiveArticleWithImages(text, title, images)
-  }
+//   if (paragraphs.length === 0) {
+//     return createDescriptiveArticleWithImages(text, title, images)
+//   }
 
-  let html = `<article class="news-article">\n\n`
+//   let html = `<article class="news-article">\n\n`
 
-  // Add title
-  html += `  <header>\n`
-  html += `    <h1 class="article-title">${escapeHtml(title)}</h1>\n`
-  html += `  </header>\n\n`
-  html += `  <br/>\n\n`
+//   // Add title
+//   html += `  <header>\n`
+//   html += `    <h1 class="article-title">${escapeHtml(title)}</h1>\n`
+//   html += `  </header>\n\n`
+//   html += `  <br/>\n\n`
 
-  // NOTE: We don't add the first image here because it's the featured image
-  // which is already displayed separately
+//   // NOTE: We don't add the first image here because it's the featured image
+//   // which is already displayed separately
 
-  // Lede paragraph (first paragraph - most important)
-  if (paragraphs.length > 0) {
-    html += `  <p class="lede">\n`
-    html += `    <strong>${escapeHtml(paragraphs[0])}</strong>\n`
-    html += `  </p>\n\n`
-    html += `  <br/>\n\n`
-  }
+//   // Lede paragraph (first paragraph - most important)
+//   if (paragraphs.length > 0) {
+//     html += `  <p class="lede">\n`
+//     html += `    <strong>${escapeHtml(paragraphs[0])}</strong>\n`
+//     html += `  </p>\n\n`
+//     html += `  <br/>\n\n`
+//   }
 
-  // Add first content image after lede if available
-  if (images.length > 0) {
-    html += formatImage(images[0], false)
-    html += `  <br/>\n\n`
-  }
+//   // Add first content image after lede if available
+//   if (images.length > 0) {
+//     html += formatImage(images[0], false)
+//     html += `  <br/>\n\n`
+//   }
 
-  // Main content with sections and strategically placed images
-  const remainingParagraphs = paragraphs.slice(1)
-  const sectionsCount = Math.ceil(remainingParagraphs.length / 3)
-  let imageIndex = 1 // Start from second image (first already used after lede)
+//   // Main content with sections and strategically placed images
+//   const remainingParagraphs = paragraphs.slice(1)
+//   const sectionsCount = Math.ceil(remainingParagraphs.length / 3)
+//   let imageIndex = 1 // Start from second image (first already used after lede)
 
-  for (let section = 0; section < sectionsCount; section++) {
-    const startIdx = section * 3
-    const endIdx = Math.min(startIdx + 3, remainingParagraphs.length)
-    const sectionParagraphs = remainingParagraphs.slice(startIdx, endIdx)
+//   for (let section = 0; section < sectionsCount; section++) {
+//     const startIdx = section * 3
+//     const endIdx = Math.min(startIdx + 3, remainingParagraphs.length)
+//     const sectionParagraphs = remainingParagraphs.slice(startIdx, endIdx)
 
-    // Add section heading (except for first section)
-    if (section > 0 && section < sectionsCount - 1) {
-      const headings = ['Details', 'Background', 'Analysis', 'Impact', 'Development', 'Response']
-      html += `  <h2 class="section-heading">${headings[section % headings.length]}</h2>\n\n`
-      html += `  <br/>\n\n`
-    }
+//     // Add section heading (except for first section)
+//     if (section > 0 && section < sectionsCount - 1) {
+//       const headings = ['Details', 'Background', 'Analysis', 'Impact', 'Development', 'Response']
+//       html += `  <h2 class="section-heading">${headings[section % headings.length]}</h2>\n\n`
+//       html += `  <br/>\n\n`
+//     }
 
-    // Add paragraphs with proper spacing
-    sectionParagraphs.forEach((para, idx) => {
-      html += `  <p>${escapeHtml(para)}</p>\n\n`
+//     // Add paragraphs with proper spacing
+//     sectionParagraphs.forEach((para, idx) => {
+//       html += `  <p>${escapeHtml(para)}</p>\n\n`
 
-      // Add image after every 2 paragraphs if available
-      if (idx === 1 && imageIndex < images.length) {
-        html += `  <br/>\n\n`
-        html += formatImage(images[imageIndex], false)
-        html += `  <br/>\n\n`
-        imageIndex++
-      } else if (idx < sectionParagraphs.length - 1) {
-        html += `  <br/>\n\n`
-      }
-    })
+//       // Add image after every 2 paragraphs if available
+//       if (idx === 1 && imageIndex < images.length) {
+//         html += `  <br/>\n\n`
+//         html += formatImage(images[imageIndex], false)
+//         html += `  <br/>\n\n`
+//         imageIndex++
+//       } else if (idx < sectionParagraphs.length - 1) {
+//         html += `  <br/>\n\n`
+//       }
+//     })
 
-    // Add spacing between sections
-    if (section < sectionsCount - 1) {
-      html += `  <br/>\n\n`
-    }
-  }
+//     // Add spacing between sections
+//     if (section < sectionsCount - 1) {
+//       html += `  <br/>\n\n`
+//     }
+//   }
 
-  html += `</article>`
+//   html += `</article>`
 
-  return html
-}
+//   return html
+// }
 
 /**
  * Format image with figure and caption
@@ -524,91 +524,91 @@ function formatImage(
  * Expands and enhances the content with proper spacing
  * Images are different from featured image
  */
-function createDescriptiveArticleWithImages(
-  text: string,
-  title: string,
-  images: Array<{ url: string; alt: string; caption?: string }>
-): string {
-  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text]
+// function createDescriptiveArticleWithImages(
+//   text: string,
+//   title: string,
+//   images: Array<{ url: string; alt: string; caption?: string }>
+// ): string {
+//   const sentences = text.match(/[^.!?]+[.!?]+/g) || [text]
 
-  // Extract key information
-  const introduction = sentences.slice(0, 2).join(' ')
-  const bodyContent = sentences.slice(2, -2)
-  const conclusion = sentences.slice(-2).join(' ')
+//   // Extract key information
+//   const introduction = sentences.slice(0, 2).join(' ')
+//   const bodyContent = sentences.slice(2, -2)
+//   const conclusion = sentences.slice(-2).join(' ')
 
-  // Build structured paragraphs
-  const paragraphs: string[] = []
+//   // Build structured paragraphs
+//   const paragraphs: string[] = []
 
-  // Opening paragraph (expanded)
-  if (introduction) {
-    paragraphs.push(introduction)
-  }
+//   // Opening paragraph (expanded)
+//   if (introduction) {
+//     paragraphs.push(introduction)
+//   }
 
-  // Main body (group sentences into paragraphs of 2-3 sentences)
-  for (let i = 0; i < bodyContent.length; i += 2) {
-    const paragraph = bodyContent.slice(i, i + 2).join(' ')
-    if (paragraph.length > 50) {
-      paragraphs.push(paragraph)
-    }
-  }
+//   // Main body (group sentences into paragraphs of 2-3 sentences)
+//   for (let i = 0; i < bodyContent.length; i += 2) {
+//     const paragraph = bodyContent.slice(i, i + 2).join(' ')
+//     if (paragraph.length > 50) {
+//       paragraphs.push(paragraph)
+//     }
+//   }
 
-  // Closing paragraph
-  if (conclusion) {
-    paragraphs.push(conclusion)
-  }
+//   // Closing paragraph
+//   if (conclusion) {
+//     paragraphs.push(conclusion)
+//   }
 
-  // Format as HTML with proper spacing and images
-  let html = `<article class="news-article">\n\n`
-  html += `  <header>\n`
-  html += `    <h1 class="article-title">${escapeHtml(title)}</h1>\n`
-  html += `  </header>\n\n`
-  html += `  <br/>\n\n`
+//   // Format as HTML with proper spacing and images
+//   let html = `<article class="news-article">\n\n`
+//   html += `  <header>\n`
+//   html += `    <h1 class="article-title">${escapeHtml(title)}</h1>\n`
+//   html += `  </header>\n\n`
+//   html += `  <br/>\n\n`
 
-  // Don't add first image here - it's the featured image displayed separately
+//   // Don't add first image here - it's the featured image displayed separately
 
-  let imageIndex = 0
+//   let imageIndex = 0
 
-  paragraphs.forEach((para, index) => {
-    // First paragraph is lede
-    if (index === 0) {
-      html += `  <p class="lede">\n`
-      html += `    <strong>${escapeHtml(para)}</strong>\n`
-      html += `  </p>\n\n`
-      html += `  <br/>\n\n`
+//   paragraphs.forEach((para, index) => {
+//     // First paragraph is lede
+//     if (index === 0) {
+//       html += `  <p class="lede">\n`
+//       html += `    <strong>${escapeHtml(para)}</strong>\n`
+//       html += `  </p>\n\n`
+//       html += `  <br/>\n\n`
 
-      // Add first content image after lede
-      if (imageIndex < images.length) {
-        html += formatImage(images[imageIndex], false)
-        html += `  <br/>\n\n`
-        imageIndex++
-      }
-    } else {
-      // Add section headings
-      if (index === Math.floor(paragraphs.length / 3)) {
-        html += `  <h2 class="section-heading">Background</h2>\n\n`
-        html += `  <br/>\n\n`
-      } else if (index === Math.floor(paragraphs.length * 2 / 3)) {
-        html += `  <h2 class="section-heading">Details</h2>\n\n`
-        html += `  <br/>\n\n`
-      }
+//       // Add first content image after lede
+//       if (imageIndex < images.length) {
+//         html += formatImage(images[imageIndex], false)
+//         html += `  <br/>\n\n`
+//         imageIndex++
+//       }
+//     } else {
+//       // Add section headings
+//       if (index === Math.floor(paragraphs.length / 3)) {
+//         html += `  <h2 class="section-heading">Background</h2>\n\n`
+//         html += `  <br/>\n\n`
+//       } else if (index === Math.floor(paragraphs.length * 2 / 3)) {
+//         html += `  <h2 class="section-heading">Details</h2>\n\n`
+//         html += `  <br/>\n\n`
+//       }
 
-      html += `  <p>${escapeHtml(para)}</p>\n\n`
+//       html += `  <p>${escapeHtml(para)}</p>\n\n`
 
-      // Add image after every 2-3 paragraphs
-      if (index % 3 === 0 && imageIndex < images.length) {
-        html += `  <br/>\n\n`
-        html += formatImage(images[imageIndex], false)
-        imageIndex++
-      }
+//       // Add image after every 2-3 paragraphs
+//       if (index % 3 === 0 && imageIndex < images.length) {
+//         html += `  <br/>\n\n`
+//         html += formatImage(images[imageIndex], false)
+//         imageIndex++
+//       }
 
-      html += `  <br/>\n\n`
-    }
-  })
+//       html += `  <br/>\n\n`
+//     }
+//   })
 
-  html += `</article>`
+//   html += `</article>`
 
-  return html
-}
+//   return html
+// }
 
 /**
  * Escape HTML special characters

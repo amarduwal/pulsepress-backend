@@ -85,7 +85,7 @@ export async function getComments(req: AuthRequest, res: Response): Promise<void
       [articleId, limit, offset],
     )
 
-    const comments = buildCommentTree(result.rows)
+    const comments = buildCommentTree(result.rows as CommentRow[])
 
     successResponse(res, {
       comments,

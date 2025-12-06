@@ -5,7 +5,7 @@ import { successResponse, errorResponse, notFoundResponse } from "../lib/respons
 import { logger } from "../lib/logger"
 import { cacheGet, cacheSet, cacheDeletePattern } from "../lib/redis"
 
-export async function getCategories(req: AuthRequest, res: Response): Promise<void> {
+export async function getCategories(_req: AuthRequest, res: Response): Promise<void> {
   try {
     const cacheKey = "categories:all"
 
@@ -17,7 +17,7 @@ export async function getCategories(req: AuthRequest, res: Response): Promise<vo
     }
 
     const result = await query(
-      `SELECT 
+      `SELECT
         c.id, c.name, c.slug, c.description, c.icon, c.color,
         c.is_active, c.sort_order,
         COUNT(a.id) as article_count
@@ -44,7 +44,7 @@ export async function getCategoryBySlug(req: AuthRequest, res: Response): Promis
     const { slug } = req.params
 
     const result = await query(
-      `SELECT 
+      `SELECT
         c.id, c.name, c.slug, c.description, c.icon, c.color,
         c.is_active, c.sort_order,
         COUNT(a.id) as article_count

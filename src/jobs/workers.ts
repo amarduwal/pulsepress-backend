@@ -11,7 +11,7 @@ import { classifyArticle } from "../services/ai/classifier"
 import { rewriteArticleWithHTML } from "../services/ai/rewriter"
 import { addProcessJob } from "./queues"
 import { needsScraping, getContentStats } from "../services/ingestion/content-analyzer"
-import { ensureHighQualityFeaturedImage } from "../services/image/image-quality-manager"
+// import { ensureHighQualityFeaturedImage } from "../services/image/image-quality-manager"
 
 const connection = {
   host: process.env.REDIS_URL?.includes("://")
@@ -62,7 +62,7 @@ async function shouldBeTrending(
  */
 async function shouldBeFeatured(
   title: string,
-  content: string,
+  _content: string,
   contentStats: { wordCount: number; charCount: number; paragraphs: number; hasImages: boolean },
   imageUrl: string | null
 ): Promise<boolean> {
