@@ -47,7 +47,10 @@ const configSchema = z.object({
   }),
 
   cors: z.object({
-    origin: z.string().default("http://localhost:3000"),
+    origin: z
+      .string()
+      .transform((val) => val.split(',').map((s) => s.trim()))
+      .default('http://localhost:3000'),
   }),
 
   logging: z.object({
