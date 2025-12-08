@@ -13,6 +13,7 @@ import { errorHandler, notFoundHandler } from "./middleware/error"
 // Import routes
 import authRoutes from "./routes/auth"
 import userRoutes from "./routes/users"
+import adsRoutes from "./routes/ads"
 import articleRoutes from "./routes/articles"
 import categoryRoutes from "./routes/categories"
 import commentRoutes from "./routes/comments"
@@ -62,6 +63,7 @@ const apiRouter = express.Router()
 
 apiRouter.use("/auth", authRoutes)
 apiRouter.use("/users", userRoutes)
+apiRouter.use("/ads", adsRoutes)
 apiRouter.use("/articles", articleRoutes)
 apiRouter.use("/categories", categoryRoutes)
 apiRouter.use("/comments", commentRoutes)

@@ -8,4 +8,4 @@ router.get("", getAdsByPosition)
 router.post("/:id/impression", trackAdImpression)
 router.post("/:id/click", trackAdClick)
 
-export { router as adsRouter }
+export default router
