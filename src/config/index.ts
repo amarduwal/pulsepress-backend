@@ -28,7 +28,7 @@ const configSchema = z.object({
 
   rateLimit: z.object({
     windowMs: z.coerce.number().default(900000),
-    maxRequests: z.coerce.number().default(100),
+    maxRequests: z.coerce.number().default(500),
   }),
 
   upload: z.object({
