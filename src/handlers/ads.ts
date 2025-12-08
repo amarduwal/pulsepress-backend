@@ -49,7 +49,7 @@ export async function getAdsByPosition(req: Request, res: Response) {
       params.push(position)
     }
 
-    query += " ORDER BY created_at DESC"
+    query += " ORDER BY RANDOM() LIMIT 5"
 
     const result = await pool.query(query, params)
     const ads = result.rows.map(transformAdvertisementFromDb)
