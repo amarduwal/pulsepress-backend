@@ -65,7 +65,7 @@ export async function searchArticles(req: AuthRequest, res: Response): Promise<v
     // Get articles
     params.push(limit, offset)
     const result = await query(
-      `SELECT 
+      `SELECT
         a.id, a.title, a.slug, a.summary, a.featured_image,
         a.published_at, a.views_count, a.shares_count,
         c.name as category_name, c.slug as category_slug, c.color as category_color,
@@ -83,12 +83,12 @@ export async function searchArticles(req: AuthRequest, res: Response): Promise<v
       {
         articles: result.rows,
         query: q,
-      },
-      {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
       },
     )
   } catch (error) {
